@@ -1,0 +1,54 @@
+# derived from the sample code in https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions
+
+# TODO change username from github.actor to twosixarmory
+# TODO add all three image flavors: tf2, pytorch-deepspeech
+
+name: Create and publish a Docker image
+
+on:
+    push:
+        branches: ["release"]
+    workflow_dispatch:
+
+env:
+    REGISTRY: ghcr.io
+    FLAVOR: pytorch
+
+jobs:
+    build:
+        outputs:
+            imageName: ${{ steps.docker-build.outputs.imageName }}
+        runs-on: ubuntu-18.04
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-python@v2
+              with:
+                  python-version: "3.7"
+            - name: Build Docker
+              id: docker-build
+              run: |
+                  pip install -r requirements.txt
+                  pip install .
+                  imageTag=$(python setup.py --version | sed -e 's/dev[0-9][0-9]*+//' -e 's/\.d[0-9][0-9]*//')
+                  echo "::set-output imageName=twosixarmory/pytorch:$imageTag"
+
+    push:
+        needs: build
+        runs-on: ubuntu-18.04
+        permissions:
+            contents: read
+            packages: write
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+
+            - name: Log in to the Container registry
+              uses: docker/login-action@v1
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Push the built image
+              run: docker push ${{ needs.build.outputs.imageName }}
