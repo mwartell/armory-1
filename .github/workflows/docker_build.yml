@@ -32,6 +32,7 @@ jobs:
               run: |
                   pip install -r requirements.txt
                   pip install .
+                  python docker/build.py pytorch
                   imageTag=$(python setup.py --version | sed -e 's/dev[0-9][0-9]*+//' -e 's/\.d[0-9][0-9]*//')
                   echo "::set-output imageName=twosixarmory/pytorch:$imageTag"
 
