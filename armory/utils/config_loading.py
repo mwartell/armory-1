@@ -32,7 +32,9 @@ from armory.utils import labels
 import copy
 
 
-def load(sub_config):
+def load_and_call(sub_config):
+    """imports module.name from the sub_config block and return the result
+    of calling module.name(args, kwargs)"""
     module = import_module(sub_config["module"])
     fn = getattr(module, sub_config["name"])
     args = sub_config.get("args", [])
@@ -221,7 +223,7 @@ def load_defense_wrapper(defense_config, classifier):
 
 
 def load_defense_internal(defense_config, classifier):
-    defense = load(defense_config)
+    defense = load_and_call(defense_config)
 
     defense_type = defense_config["type"]
     if defense_type == "Preprocessor":

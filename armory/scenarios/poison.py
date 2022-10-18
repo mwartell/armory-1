@@ -177,7 +177,7 @@ class Poison(Scenario):
         self.source_class = adhoc_config["source_class"]
         self.target_class = adhoc_config["target_class"]
         if self.use_poison:
-            attack = config_loading.load(attack_config)
+            attack = config_loading.load_and_call(attack_config)
             self.poisoner = DatasetPoisoner(
                 attack,
                 self.source_class,
