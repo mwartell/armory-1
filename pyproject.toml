@@ -35,6 +35,7 @@ dependencies = [
     "PyYAML",
     "requests",
     "toml",
+    "hydra-zen",
 ]
 
 [project.urls]
@@ -54,10 +55,8 @@ developer =[
     "mkdocs",
     "black[jupyter]==22.*",
     "flake8",
-    "yamllint",
     "bandit[toml]", # code scanning
     "tox", # testing
-    "hydra-core", # configuration
 ]
 
 engine = [
