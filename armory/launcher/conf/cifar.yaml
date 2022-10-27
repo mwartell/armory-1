@@ -1,0 +1,19 @@
+# stripped down, incomplete experiment for learning hydra
+_description: truncated cifar10 image classification
+attack:
+  knowledge: white
+  kwargs:
+    batch_size: 1
+    eps: 0.031
+  module: art.attacks.evasion
+  name: ProjectedGradientDescent
+  use_label: true
+dataset:
+  batch_size: 64
+  framework: numpy
+  module: armory.data.datasets
+  name: cifar10
+scenario:
+  kwargs: {}
+  module: armory.scenarios.image_classification
+  name: ImageClassificationTask

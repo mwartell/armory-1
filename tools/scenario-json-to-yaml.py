@@ -23,7 +23,7 @@ for source in sources:
     # create a tree under dest parallel to the source tree
     yaml_dir = dest.joinpath(*source.parts[1:-1])
     yaml_dir.mkdir(parents=True, exist_ok=True)
-    yaml_file = yaml_dir / source.with_suffix(".yml").name
+    yaml_file = yaml_dir / source.with_suffix(".yaml").name
 
     OmegaConf.save(experiment, yaml_file)
     print(f"wrote {yaml_file} from {source}")
