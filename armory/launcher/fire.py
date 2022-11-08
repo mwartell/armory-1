@@ -1,10 +1,11 @@
-from pathlib import Path
 from dataclasses import dataclass
 
 from omegaconf import OmegaConf, DictConfig
-from hydra.core.config_store import ConfigStore
+
 import hydra
-from armory import SRC_ROOT
+
+# from armory import SRC_ROOT
+# from hydra.core.config_store import ConfigStore
 
 
 @dataclass
@@ -37,13 +38,6 @@ class Experiment:
     attack: Attack
     dataset: Dataset
     scenario: Scenario
-
-
-root = Path(SRC_ROOT)
-cifar = root / "launcher/conf/cifar.yaml"
-
-cs = ConfigStore.instance()
-cs.store(name="experiment", node=Experiment)
 
 
 @hydra.main(version_base=None, config_path="conf", config_name="cifar")
