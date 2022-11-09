@@ -158,3 +158,172 @@ It is not obvious that the former is preferable, but I'd like to have folks thin
 about compositional approaches to the experiments.
 
 I've written a short script to look for more commonalities in the experiments.
+These are the matched configurations with a similarity measure of 0.85 or greater.
+
+| file1 | file2 | similarity |
+| --- | --- | ---: |
+| cifar10_sleeper_agent_p30_undefended.yaml | cifar10_sleeper_agent_p20_undefended.yaml | 0.99 |
+| cifar10_dlbd_watermark_activation_defense.yaml | cifar10_poison_dlbd.yaml | 0.99 |
+| cifar10_witches_brew_activation_defense.yaml | cifar10_witches_brew.yaml | 0.99 |
+| so2sat_sar_masked_pgd_defended.yaml | so2sat_eo_masked_pgd_defended.yaml | 0.98 |
+| gtsrb_dlbd_baseline_keras.yaml | gtsrb_dlbd_baseline_pytorch.yaml | 0.98 |
+| audio_p05_undefended.yaml | audio_p01_undefended.yaml | 0.98 |
+| gtsrb_witches_brew_activation_defense.yaml | gtsrb_witches_brew.yaml | 0.98 |
+| cifar10_sleeper_agent_p00_undefended.yaml | cifar10_sleeper_agent_p30_undefended.yaml | 0.98 |
+| so2sat_sar_masked_pgd_undefended.yaml | so2sat_eo_masked_pgd.yaml | 0.98 |
+| cifar10_dlbd_copyright_activation_defense.yaml | cifar10_dlbd_watermark_activation_defense.yaml | 0.97 |
+| cifar10_dlbd_copyright_random_filter.yaml | cifar10_dlbd_watermark_random_filter.yaml | 0.97 |
+| cifar10_dlbd_copyright_perfect_filter.yaml | cifar10_dlbd_watermark_perfect_filter.yaml | 0.97 |
+| cifar10_sleeper_agent_p10_random_filter.yaml | cifar10_sleeper_agent_p10_spectral_signatures_defense.yaml | 0.97 |
+| gtsrb_clbd_peace_sign_activation_defense.yaml | gtsrb_clbd_bullet_holes_activation_defense.yaml | 0.97 |
+| cifar10_dlbd_copyright_undefended.yaml | cifar10_dlbd_watermark_undefended.yaml | 0.97 |
+| gtsrb_clbd_peace_sign_random_filter.yaml | gtsrb_clbd_bullet_holes_random_filter.yaml | 0.97 |
+| gtsrb_clbd_peace_sign_perfect_filter.yaml | gtsrb_clbd_bullet_holes_perfect_filter.yaml | 0.97 |
+| targeted_snr_pgd.yaml | librispeech_asr_snr_targeted.yaml | 0.97 |
+| gtsrb_clbd_peace_sign_undefended.yaml | gtsrb_clbd_bullet_holes_undefended.yaml | 0.97 |
+| librispeech_asr_pgd_undefended.yaml | librispeech_asr_pgd_multipath_channel_undefended.yaml | 0.97 |
+| cifar10_sleeper_agent_p10_spectral_signatures_defense.yaml | cifar10_sleeper_agent_p10_perfect_filter.yaml | 0.97 |
+| gtsrb_dlbd_peace_sign_random_filter.yaml | gtsrb_dlbd_bullet_holes_random_filter.yaml | 0.97 |
+| gtsrb_dlbd_peace_sign_perfect_filter.yaml | gtsrb_dlbd_bullet_holes_perfect_filter.yaml | 0.97 |
+| gtsrb_clbd_peace_sign_spectral_signature_defense.yaml | gtsrb_clbd_bullet_holes_spectral_signature_defense.yaml | 0.96 |
+| cifar10_dlbd_copyright_activation_defense.yaml | cifar10_poison_dlbd.yaml | 0.96 |
+| gtsrb_dlbd_peace_sign_undefended.yaml | gtsrb_dlbd_bullet_holes_undefended.yaml | 0.96 |
+| cifar10_witches_brew_spectral_signature_defense.yaml | cifar10_witches_brew_random_filter.yaml | 0.96 |
+| cifar10_sleeper_agent_p10_random_filter.yaml | cifar10_sleeper_agent_p10_perfect_filter.yaml | 0.96 |
+| audio_p00_undefended.yaml | audio_p05_undefended.yaml | 0.96 |
+| librispeech_asr_snr_targeted.yaml | librispeech_asr_snr_undefended.yaml | 0.96 |
+| gtsrb_dlbd_peace_sign_spectral_signature_defense.yaml | gtsrb_dlbd_bullet_holes_spectral_signature_defense.yaml | 0.96 |
+| cifar10_witches_brew_random_filter.yaml | cifar10_witches_brew_perfect_filter.yaml | 0.96 |
+| [… _100 more comparisons with similarity > 0.85 removed_ …] |
+| carla_obj_det_multimodal_adversarialpatch_undefended.yaml | carla_obj_det_multimodal_dpatch_undefended.yaml | 0.87 |
+| librispeech_asr_pgd_undefended.yaml | asr_librispeech_targeted.yaml | 0.86 |
+| librispeech_asr_snr_targeted.yaml | asr_librispeech_entailment.yaml | 0.86 |
+| carla_obj_det_adversarialpatch_undefended.yaml | carla_obj_det_dpatch_undefended.yaml | 0.86 |
+| gtsrb_clbd_bullet_holes_undefended.yaml | gtsrb_scenario_clbd_bullethole.yaml | 0.86 |
+| defended_entailment.yaml | defended_untargeted_snr_pgd.yaml | 0.86 |
+| carla_obj_det_multimodal_adversarialpatch_undefended.yaml | carla_obj_det_adversarialpatch_undefended.yaml | 0.86 |
+| librispeech_asr_snr_undefended.yaml | asr_librispeech_entailment.yaml | 0.85 |
+| resisc45_baseline_densenet121_finetune.yaml | resisc45_baseline_densenet121_targeted.yaml | 0.85 |
+| defended_targeted_snr_pgd.yaml | librispeech_asr_snr_undefended.yaml | 0.85 |
+| gtsrb_dlbd_peace_sign_activation_defense.yaml | gtsrb_dlbd_bullet_holes_undefended.yaml | 0.85 |
+| carla_obj_det_dpatch_undefended.yaml | carla_obj_det_multimodal_dpatch_undefended.yaml | 0.85 |
+
+Looking at the differences in an arbitrary 0.96 similarity pair shows
+```diff
+--- cifar10_witches_brew_random_filter.yaml     2022-11-08 17:03:57.674036989 -0500
++++ cifar10_witches_brew_perfect_filter.yaml    2022-11-08 17:03:57.674036989 -0500
+@@ -1,9 +1,8 @@
+-_description: CIFAR10 poison image classification, witches' brew attack, random filter
++_description: CIFAR10 poison image classification, witches' brew attack, perfect filter
+ adhoc:
+   compute_fairness_metrics: true
+   experiment_id: 0
+   explanatory_model: cifar10_silhouette_model
+-  fit_defense_classifier_outside_defense: false
+   fraction_poisoned: 0.1
+   poison_dataset: true
+   source_class:
+@@ -61,9 +60,9 @@
+   name: cifar10
+ defense:
+   kwargs:
+-    expected_pp_poison: 0.3
+-  module: armory.art_experimental.poison_detection.random_filter
+-  name: RandomFilterBaselineDefense
++    perfect_filter: true
++  module: 'null'
++  name: 'null'
+   type: PoisonFilteringDefence
+ metric: null
+ model:
+ ```
+
+Does this look like a base and variant?  Looking at at an example of a 0.85 similarity
+score, we can see that the differences are slight but significant. Is it worth
+refactoring those to base and variant?
+
+```diff
+--- carla_obj_det_adversarialpatch_undefended.yaml      2022-11-08 17:03:57.674036989 -0500
++++ carla_obj_det_multimodal_adversarialpatch_undefended.yaml   2022-11-08 17:03:57.674036989 -0500
+@@ -1,10 +1,12 @@
+-_description: CARLA single modality object detection, contributed by MITRE Corporation
++_description: CARLA multimodality object detection, contributed by MITRE Corporation
+ adhoc: null
+ attack:
+   knowledge: white
+   kwargs:
+     batch_size: 1
++    depth_delta_meters: 3
+     learning_rate: 0.003
++    learning_rate_depth: 0.0001
+     max_iter: 1000
+     optimizer: pgd
+     targeted: false
+@@ -16,7 +18,7 @@
+   batch_size: 1
+   eval_split: dev
+   framework: numpy
+-  modality: rgb
++  modality: both
+   module: armory.data.adversarial_datasets
+   name: carla_obj_det_dev
+ defense: null
+@@ -33,11 +35,10 @@
+ model:
+   fit: false
+   fit_kwargs: {}
+-  model_kwargs:
+-    num_classes: 4
+-  module: armory.baseline_models.pytorch.carla_single_modality_object_detection_frcnn
+-  name: get_art_model
+-  weights_file: carla_rgb_weights_eval5.pt
++  model_kwargs: {}
++  module: armory.baseline_models.pytorch.carla_multimodality_object_detection_frcnn
++  name: get_art_model_mm
++  weights_file: carla_multimodal_naive_weights_eval5.pt
+   wrapper_kwargs: {}
+ scenario:
+   kwargs: {}
+msw@omen 艹armory ~/t/a/e/e/carla_object_detection (mwartell/issue1618 *) [1]> diff -u carla_obj_det_multimodal_adversarialpatch_undefended.yaml carla_obj_det_adversarialpatch_undefended.yaml
+--- carla_obj_det_multimodal_adversarialpatch_undefended.yaml   2022-11-08 17:03:57.674036989 -0500
++++ carla_obj_det_adversarialpatch_undefended.yaml      2022-11-08 17:03:57.674036989 -0500
+@@ -1,12 +1,10 @@
+-_description: CARLA multimodality object detection, contributed by MITRE Corporation
++_description: CARLA single modality object detection, contributed by MITRE Corporation
+ adhoc: null
+ attack:
+   knowledge: white
+   kwargs:
+     batch_size: 1
+-    depth_delta_meters: 3
+     learning_rate: 0.003
+-    learning_rate_depth: 0.0001
+     max_iter: 1000
+     optimizer: pgd
+     targeted: false
+@@ -18,7 +16,7 @@
+   batch_size: 1
+   eval_split: dev
+   framework: numpy
+-  modality: both
++  modality: rgb
+   module: armory.data.adversarial_datasets
+   name: carla_obj_det_dev
+ defense: null
+@@ -35,10 +33,11 @@
+ model:
+   fit: false
+   fit_kwargs: {}
+-  model_kwargs: {}
+-  module: armory.baseline_models.pytorch.carla_multimodality_object_detection_frcnn
+-  name: get_art_model_mm
+-  weights_file: carla_multimodal_naive_weights_eval5.pt
++  model_kwargs:
++    num_classes: 4
++  module: armory.baseline_models.pytorch.carla_single_modality_object_detection_frcnn
++  name: get_art_model
++  weights_file: carla_rgb_weights_eval5.pt
+   wrapper_kwargs: {}
+ scenario:
+   kwargs: {}
+```
