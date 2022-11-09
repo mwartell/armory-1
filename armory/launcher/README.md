@@ -67,7 +67,7 @@ exist, you'll get an error:
 Unfortunately, the `args` and `kwargs` parameters present in most of the experiment
 blocks cannot be checked for validity because they are of type `list[Any]` and
 `dict[Any, Any]` per their definition. TODO: Can we nail down the types? I think not
-because the consumers of the args/kwargs are variadic.
+because the consumers of the args/kwargs are varadic.
 
 [struct]: https://omegaconf.readthedocs.io/en/2.2_branch/structured_config.html
 
@@ -96,14 +96,13 @@ You can apply the overrides on the armory command line:
     armory run experiments/asr_librespeech.yaml --overrides=overrides/snr_pgd_targeted.yaml
 
 This starts with the `asr_librespeech.yaml` experiment and applies the overrides
-in the `snr_pgd_targeted.yaml` file. It might be useful to pre-merge experiments and
+in the `snr_pgd_targeted.yaml` file. It might be useful to pre-merge experiements and
 overrides into a single file for easier sharing. This can be done with the
 
     armory experiment merge base.yaml overrides.yaml more_overrides.yaml
 
 command with the merged output on stdout. As with `armory run` the `merge` command
-accepts `+key=value` overrides which are applied after the merge (I think (TODO:
-check)).
+accepts `+key=value` overrides which are applied after the merge.
 
 ## overrides using interpolation syntax
 
@@ -111,6 +110,7 @@ OmegaConf supports [interpolation syntax][interp] which allows you to reference
 one parameter from another. For example, you could have an experiment like:
 
 ```yaml
+  # obviously degenerate experiment for illustration
   attack:
     kwargs:
         targeted: ${targeted}
@@ -122,19 +122,39 @@ which would allow you to specify the `targeted` parameter on the command line:
 
     armory run experiments/asr_librespeech.yaml +targeted=true
 
-Because the interpolation has to reference an existing parameter, the `+targeted`
-becomes a datum `targeted: true` peer to attack, dataset, etc. I don't see an easy
-way to avoid creating spurious parameters. We could create a `parameter` block
-or similar which could contain those values but then we are looking at interpolations
-of `${parameter.targeted}` which is a verbose and the meaningless `parameter` block
-is just ugly. The behavior of a parameterized experiment is a syntax error if you
-don't specify `+targeted=<bool>`, and there is little about the structure of the
-experiment that suggests you need to define something.
+Because the interpolation has to reference an existing parameter, the `+targeted=true`
+becomes a datum `targeted: true` peer to attack, dataset, etc. I don't see an easy way
+to avoid creating spurious parameters. We could create a `options` block or similar
+which could contain those values but then we are looking at interpolations of
+`${options.targeted}`. The behavior of a parameterized experiment is a syntax error if
+you don't specify `+targeted=<bool>`, and there is little about the structure of the
+experiment that suggests you need to define something. Comments will certainly help.
 
 Furthermore, the interpolation mechanism assumes that we'll want to parameterize two or
-more variables that all receive the same value. If enabling "targeted" requires
-different values than the [variant override][def] quickly
-looks superior.
+more variables that all receive the same value. If a modification requires different
+values than the [variant override][def] quickly looks superior.
 
 [interp]: https://omegaconf.readthedocs.io/en/2.2_branch/usage.html#variable-interpolation
 [def]: #variant-experiments-and-overrides
+
+## reducing the experiment bestiary with composition
+
+A second benefit of using the composition by merging approach is that it may allow
+clearer relations between experiments. For example, the experiment
+`ucf101_pretrained_masked_pgd_defended.yaml` differs from `ucf101_pretrained_masked_pgd.yaml`
+only with the addition of the `defense:` block. Is it better to have the two to be
+run like:
+
+    armory run experiments/ucf101_pretrained_masked_pgd.yaml
+    armory run experiments/ucf101_pretrained_masked_pgd.yaml --merge ucf101_defense.yaml
+
+which illuminates the commonality between the two experiments, or to have them as
+separate experiments:
+
+    armory run experiments/ucf101_pretrained_masked_pgd_undefended.yaml
+    armory run experiments/ucf101_pretrained_masked_pgd_defended.yaml
+
+It is not obvious that the former is preferable, but I'd like to have folks think
+about compositional approaches to the experiments.
+
+I've written a short script to look for more commonalities in the experiments.
