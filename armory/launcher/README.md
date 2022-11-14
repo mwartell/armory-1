@@ -338,6 +338,8 @@ TODO: we know that the args and kwargs groups are not typed and wish to promote
 those keys to named properties.
 
 
+
+
 ```yaml
 len(experiments)=150
 _description: str
@@ -386,7 +388,6 @@ defense:
     type: str
 metric:
     means: bool
-    metric: NoneType
     perturbation: str | list
     record_metric_per_sample: bool
     task: list
