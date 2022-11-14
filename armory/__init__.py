@@ -12,6 +12,7 @@ Config = typedef.Config
 
 
 SRC_ROOT = Path(__file__).parent
+REPO_ROOT = SRC_ROOT.parent
 
 
 def __getattr__(name):

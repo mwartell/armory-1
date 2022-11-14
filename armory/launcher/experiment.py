@@ -1,11 +1,12 @@
+"""
+Defines the Experiment class which holds all the configuration information
+passed to armory engine.
+"""
+
 from dataclasses import dataclass
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Union
 
-import hydra
-from omegaconf import OmegaConf, DictConfig, ListConfig
-
-# from armory import SRC_ROOT
-# from hydra.core.config_store import ConfigStore
+from omegaconf import OmegaConf
 
 # TODO: there is only one AudioChannel bearing experiment, so this might be wider
 @dataclass
@@ -15,24 +16,37 @@ class AudioChannel:
     pytorch: bool
 
 
-# TODO: class Adhoc needs a proper definition for now it is a Dict[str, Any]
-class Adhoc(DictConfig):
-    pass
+@dataclass
+class Adhoc:
+    audio_channel: AudioChannel
+    compute_fairness_metrics: bool
+    experiment_id: int
+    explanatory_model: Optional[str]
+    fit_defense_classifier_outside_defense: bool
+    fraction_poisoned: float
+    poison_dataset: bool
+    skip_adversarial: bool
+    source_class: Union[int, List[int]]
+    split_id: int
+    target_class: Union[int, List[int]]
+    train_epochs: int
+    trigger_index: None
+    use_poison_filtering_defense: bool
 
 
 @dataclass
 class Attack:
+    generate_kwargs: dict
     knowledge: str
+    kwargs: dict
     module: str
     name: str
+    sweep_params: dict
+    targeted_labels: dict
     targeted: bool
     type: str
     use_adversarial_trainer: bool
     use_label: bool
-    sweep_params: DictConfig = DictConfig({})
-    generate_kwargs: DictConfig = DictConfig({})
-    kwargs: DictConfig = DictConfig({})
-    targeted_labels: DictConfig = DictConfig({})
 
 
 @dataclass
@@ -42,6 +56,8 @@ class Dataset:
     framework: str
     index: str
     max_frames: int
+    module: str
+    name: str
     modality: str
     pad_data: bool
     train_split: str
@@ -49,17 +65,17 @@ class Dataset:
 
 @dataclass
 class Defense:
+    data_augmentation: dict
+    kwargs: dict
     module: str
     name: str
     type: str
-    data_augmentation: DictConfig = DictConfig({})
-    kwargs: DictConfig = DictConfig({})
 
 
 @dataclass
 class Metric:
     means: bool
-    perturbation: Union[str, List[str]]
+    perturbation: Any
     record_metric_per_sample: bool
     task: List[str]
 
@@ -70,6 +86,7 @@ class Model:
     fit_kwargs: dict
     model_kwargs: dict
     module: str
+    name: str
     weights_file: Optional[str]
     wrapper_kwargs: dict
 
@@ -86,9 +103,9 @@ class Scenario:
 @dataclass
 class Sysconfig:
     docker_image: str
-    external_github_repo: Optional[str | List[str]]
+    external_github_repo: Optional[List[str]]
     gpus: str
-    local_repo_path: Optional[str | List[str]]
+    local_repo_path: Optional[List[str]]
     num_eval_batches: int
     output_dir: Optional[str]
     output_filename: Optional[str]
@@ -99,27 +116,29 @@ class Sysconfig:
 @dataclass
 class Experiment:
     _description: str
-    adhoc: Adhoc
+    adhoc: Optional[Adhoc]
     attack: Attack
     dataset: Dataset
-    defense: Defense
+    defense: Optional[Defense]
     metric: Metric
     model: Model
     scenario: Scenario
     sysconfig: Sysconfig
 
 
-@hydra.main(version_base=None, config_path="conf", config_name="cifar10")
-def main(exp: Experiment) -> None:
-    print(OmegaConf.to_yaml(exp))
+if __name__ == "__main__":
+    from armory import SRC_ROOT
+    from pprint import pprint
 
-    print(f"{exp.attack.module=}")
-    print(f"{exp.attack.kwargs=}")
+    empty = OmegaConf.structured(Experiment)
+    print(f"{empty=}")
 
-    import yaml
+    cifar = SRC_ROOT.parent / "experiments/cifar10_baseline.yaml"
+    assert cifar.exists()
+    loaded = OmegaConf.load(cifar)
 
-    foo = yaml.load(open("armory/launcher/conf/cifar10.yaml"), Loader=yaml.FullLoader)
-    assert OmegaConf.to_yaml(exp) == OmegaConf.to_yaml(foo)
+    merged = OmegaConf.merge(empty, loaded)
+    print(OmegaConf.to_yaml(merged))
 
-
-main()
+    missing = OmegaConf.missing_keys(merged)
+    print(f"{missing=}")

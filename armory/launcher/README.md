@@ -376,6 +376,8 @@ dataset:
     framework: str
     index: str
     max_frames: int
+    module: str
+    name: str
     modality: str
     pad_data: bool
     train_split: str
@@ -396,6 +398,7 @@ model:
     fit_kwargs: dict
     model_kwargs: dict
     module: str
+    name: str
     weights_file: str | NoneType
     wrapper_kwargs: dict
 scenario:
@@ -416,9 +419,49 @@ sysconfig:
     use_gpu: bool
 ```
 
-# adhoc block
+## adhoc block
 
 The adhoc block is an `Optional[Dict[str, Any]]` and is used to pass data not
 covered by the other blocks.  In most cases, it is `None`, in poisoning
 experiments it can have ~10 keys. This probably wants to be promoted to a
 formal block.
+
+# Refining Experiment sub-types
+
+There were some types that could not be expressed in OmegaConf. This
+has caused some degenerate typing of several fields. The biggest offender
+is that
+
+    field: Union[int, List[int]]
+
+is specifically disallowed by the OmegaConf because there are ambiguities
+that their on-demand type casts that can't be resolved. There are
+multiple places in the code like
+
+    if not isinstance(item, list):
+        item = [item]
+
+Those promotions are ugly and `item` should always hold a list and
+never a scalar. Purging those constructions will improve readability
+and consistency.
+
+# missing values, null, and None
+
+Moving to a structured Experiement type requires some decisions about how
+to handle missing values. We have the ability to be more flexible than
+json-schema afforded, but we want to be consistent while shooting for
+concision.
+
+There are many places in the [engine code][adhoc] where experiment blocks
+are presumed to be present and empty:
+
+    adhoc_config = self.config.get("adhoc") or {}
+
+Which suggests that the construction
+
+    class Experiment
+        adhoc: Optional[Adhoc]
+
+is a proper encoding.
+
+[adhoc]: https://github.com/twosixlabs/armory/blob/1d6caa9166313c1409edbbc5f089d2bc774b5230/armory/scenarios/poison.py#L148

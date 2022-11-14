@@ -1,3 +1,7 @@
+"""
+compute pairwise similarities of all experiments
+"""
+
 import difflib
 
 from armory import SRC_ROOT
