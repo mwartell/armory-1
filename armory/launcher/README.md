@@ -327,3 +327,97 @@ msw@omen 艹armory ~/t/a/e/e/carla_object_detection (mwartell/issue1618 *) [1]> 
  scenario:
    kwargs: {}
 ```
+
+# notes on refactor to structured types
+
+I have a scripts `experiment-keys.py` which extracts all keys from the
+experiments collection and shows all seen types for their values. This survey
+informs the declarations of the structured types in experiment.py.
+
+TODO: we know that the args and kwargs groups are not typed and wish to promote
+those keys to named properties.
+
+
+```yaml
+len(experiments)=150
+_description: str
+adhoc: NoneType | dict
+    audio_channel: dict
+    compute_fairness_metrics: bool
+    experiment_id: int
+    explanatory_model: str | NoneType
+    fit_defense_classifier_outside_defense: bool
+    fraction_poisoned: float | int
+    poison_dataset: bool
+    skip_adversarial: bool
+    source_class: list | int
+    split_id: int
+    target_class: list | int
+    train_epochs: int
+    trigger_index: NoneType
+    use_poison_filtering_defense: bool
+attack:
+    generate_kwargs: dict
+    knowledge: str
+    kwargs: dict
+    module: str
+    name: str
+    sweep_params: dict
+    targeted: bool
+    targeted_labels: dict
+    type: str
+    use_adversarial_trainer: bool
+    use_label: bool
+dataset:
+    batch_size: int
+    eval_split: str
+    framework: str
+    index: str
+    max_frames: int
+    modality: str
+    pad_data: bool
+    train_split: str
+defense:
+    data_augmentation: dict
+    defense: NoneType
+    kwargs: dict
+    module: str
+    name: str
+    type: str
+metric:
+    means: bool
+    metric: NoneType
+    perturbation: str | list
+    record_metric_per_sample: bool
+    task: list
+model:
+    fit: bool
+    fit_kwargs: dict
+    model_kwargs: dict
+    module: str
+    weights_file: str | NoneType
+    wrapper_kwargs: dict
+scenario:
+    export_batches: bool
+    kwargs: dict
+    module: str
+    name: str
+    tracked_classes: list
+sysconfig:
+    docker_image: str
+    external_github_repo: str | list | NoneType
+    gpus: str
+    local_repo_path: NoneType
+    num_eval_batches: int
+    output_dir: NoneType
+    output_filename: NoneType
+    set_pythonhashseed: bool
+    use_gpu: bool
+```
+
+# adhoc block
+
+The adhoc block is an `Optional[Dict[str, Any]]` and is used to pass data not
+covered by the other blocks.  In most cases, it is `None`, in poisoning
+experiments it can have ~10 keys. This probably wants to be promoted to a
+formal block.
