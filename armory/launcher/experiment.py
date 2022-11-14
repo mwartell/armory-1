@@ -116,5 +116,10 @@ def main(exp: Experiment) -> None:
     print(f"{exp.attack.module=}")
     print(f"{exp.attack.kwargs=}")
 
+    import yaml
+
+    foo = yaml.load(open("armory/launcher/conf/cifar10.yaml"), Loader=yaml.FullLoader)
+    assert OmegaConf.to_yaml(exp) == OmegaConf.to_yaml(foo)
+
 
 main()
